@@ -5,6 +5,8 @@ const cookieParser = require("cookie-parser");
 const csrf = require("csurf");
 const expressSessions = require("express-session");
 const MemoryStore = require("memorystore")(expressSessions);
+const passport = require("passport");
+const flash = require("connect-flash");
 
 
 const app = express();
@@ -21,9 +23,21 @@ app.use(expressSessions({
     resave: true,
     saveUninitialized: false,
     maxAge: 60 * 1000,
+    store: new MemoryStore({
+        checkPeriod: 86400000
+    }),
 }))
 
 app.use(csrf());
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.use(flash());
+app.use((req, res, next) => {
+    res.locals.error = req.flash("error");
+    next();
+})
+
 
 app.use(require('./controller/routes'));
 

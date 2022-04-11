@@ -70,35 +70,35 @@
         style="margin: 0 auto"
         class="col-12 col-md-6 col-lg-5 p-5 customborder"
       >
-        
-        <!-- <div
+
+      <% if(error != ""){ %>
+        <div
           class="alert alert-danger alert-dismissible fade show"
           role="alert"
-        > -->
-          <!-- <strong> Error </strong> -->
-          
-          <!-- <button
+        >
+          <strong> Error </strong> <%= error %>. 
+
+          <button
             type="button"
             class="btn-close"
             data-bs-dismiss="alert"
             aria-label="Close"
           ></button>
-        </div> -->
-        
+        </div>
 
-        <!-- if someone tried to access a protected route  -->
-        <!-- this flash message will show them to login first  -->
+      <% } %>
 
-        
-          <!-- <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <!-- if someone tried to access a protected route 
+         this flash message will show them to login first  -->
+
+        <!-- <div class="alert alert-danger alert-dismissible fade show" role="alert">
               <strong> Error </strong>
               
                   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
           </div> -->
-          
 
         <form action="/login" , method="POST">
-          <input type="hidden" name="_csrf" value="" />
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
           <div class="mb-3">
             <label for="username">Enter Your Email</label>
             <input

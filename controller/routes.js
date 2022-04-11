@@ -3,13 +3,23 @@ const router = express.Router();
 const user = require("../model/user");
 const bcryptjs = require("bcryptjs");
 const bcrypt = require("bcryptjs/dist/bcrypt");
+const passport = require("passport");
+require("./passportLocal")(passport);
+
+const checkAuth = (req, res, next) => {
+    if(req.isAuthenticated()){
+        next();
+    } else {
+        res.redirect("/")
+    }
+}
 
 router.get("/", (req, res) => {
   res.render("index");
 });
 
 router.get("/login", (req, res) => {
-  res.render("login");
+  res.render("login", { csrfToken: req.csrfToken() });
 });
 
 router.get("/signup", (req, res) => {
@@ -48,6 +58,7 @@ router.post("/signup", (req, res) => {
                         username: username,
                         email: email,
                         password: hash,
+                        isVerified: isVerified,
                         googleId: null,
                         provider: "email",
                     }).save((err, data) => {
@@ -62,8 +73,20 @@ router.post("/signup", (req, res) => {
   }
 });
 
+router.post("/login", (req, res, next) => {
+    passport.authenticate("local", {
+        failureRedirect: "/login",
+        successRedirect: "/profile",
+        failureFlash: true,
+    })(req, res, next);
+})
+
+// router.get("/profile", checkAuth, (req, res) => {
+//     res.render("profile", { username: req.user.username })
+// });
+
 router.get("/profile", (req, res) => {
-  res.render("profile");
-});
+    res.render("profile")
+})
 
 module.exports = router;
