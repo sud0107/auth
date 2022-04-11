@@ -5,6 +5,8 @@ const bcryptjs = require("bcryptjs");
 const bcrypt = require("bcryptjs/dist/bcrypt");
 const passport = require("passport");
 require("./passportLocal")(passport);
+require("./googleAuth")(passport);
+
 
 const checkAuth = (req, res, next) => {
     if(req.isAuthenticated()){
@@ -84,6 +86,12 @@ router.post("/login", (req, res, next) => {
 // router.get("/profile", checkAuth, (req, res) => {
 //     res.render("profile", { username: req.user.username })
 // });
+
+router.get("/google", passport.authenticate("google", { scope: ["profile", "email"] }))
+
+router.get("/google/callback",  passport.authenticate("google", { failureRedirect: "/login" }), (req, res) => {
+    res.redirect("/profile")
+})
 
 router.get("/profile", (req, res) => {
     res.render("profile")
